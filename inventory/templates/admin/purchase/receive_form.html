@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Receive purchase {{ purchase }}</h1>
+<p>Enter quantity received for each item (defaults to the outstanding quantity). Leave 0 to skip a line.</p>
+<form method="post">
+  {% csrf_token %}
+  {{ warehouse_form.as_p }}
+  <table>
+    <tr><th>Product</th><th>Ordered</th><th>Already received</th><th>Outstanding</th><th>Receive now</th></tr>
+    {% for row in rows %}
+    <tr>
+      <td>{{ row.item.product }}</td>
+      <td>{{ row.item.quantity_ordered }}</td>
+      <td>{{ row.item.quantity_received }}</td>
+      <td>{{ row.outstanding }}</td>
+      <td><input type="number" name="qty_{{ row.item.id }}" value="{{ row.outstanding }}" min="0"></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p><input type="submit" value="Receive" class="default"></p>
+</form>
+{% endblock %}

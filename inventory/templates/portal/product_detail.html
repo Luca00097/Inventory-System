@@ -1,0 +1,61 @@
+{% extends "portal/base.html" %}
+{% block content %}
+<p class="pt-back"><a href="{% url 'portal_products' %}">All products</a></p>
+<h1 class="pt-title">{{ product.name }}</h1>
+<p class="pt-sub">{{ product.sku }}{% if product.category %} &middot; {{ product.category }}{% endif %} &middot; sold by the {{ product.get_unit_display|lower }}{% if not product.active %} &middot; no longer active{% endif %}</p>
+
+<div class="ds-cards">
+  <div class="ds-card{% if is_low %} alert{% endif %}">
+    <div class="label">In stock</div>
+    <div class="figure">{{ total }}</div>
+    <div class="note">{% if is_low %}At or below the reorder level{% else %}{{ total_available }} available to sell{% endif %}</div>
+  </div>
+  <div class="ds-card">
+    <div class="label">Reorder at</div>
+    <div class="figure">{{ product.reorder_level }}</div>
+    <div class="note">Target stock {{ product.target_stock }}</div>
+  </div>
+  <div class="ds-card">
+    <div class="label">Selling price</div>
+    <div class="figure">₦{{ product.selling_price|floatformat:"0g" }}</div>
+    <div class="note">Per {{ product.get_unit_display|lower }}</div>
+  </div>
+  {% if money %}
+  <div class="ds-card">
+    <div class="label">Cost price</div>
+    <div class="figure">₦{{ product.cost_price|floatformat:"0g" }}</div>
+    <div class="note">{% if product.supplier %}From {{ product.supplier }}{% else %}No supplier set{% endif %}</div>
+  </div>
+  {% endif %}
+</div>
+
+<section class="ds-panel">
+  <h2>Stock by warehouse</h2>
+  <table class="ds-table">
+    <tr><th>Warehouse</th><th class="num">In stock</th><th class="num">Reserved</th><th class="num">Available</th></tr>
+    {% for r in rows %}
+    <tr><td>{{ r.warehouse }}</td><td class="num">{{ r.quantity }}</td><td class="num">{{ r.reserved }}</td><td class="num">{{ r.available }}</td></tr>
+    {% endfor %}
+    <tr class="total"><td>Total</td><td class="num">{{ total }}</td><td class="num">&nbsp;</td><td class="num">{{ total_available }}</td></tr>
+  </table>
+</section>
+
+<section class="ds-panel">
+  <h2>Stock history</h2>
+  {% if history %}
+  <table class="ds-table">
+    <tr><th>When</th><th>Warehouse</th><th>What happened</th><th class="num">Quantity</th><th>Reference</th><th>By</th></tr>
+    {% for m in history %}
+    <tr>
+      <td>{{ m.timestamp|date:"j M Y, H:i" }}</td>
+      <td>{{ m.warehouse }}</td>
+      <td>{{ m.get_movement_type_display }}</td>
+      <td class="num {% if m.quantity > 0 %}pos{% else %}neg{% endif %}">{% if m.quantity > 0 %}+{% endif %}{{ m.quantity }}</td>
+      <td>{{ m.reference|default:"-" }}</td>
+      <td>{{ m.user.get_username|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="ds-empty">Nothing has happened to this product yet.</p>{% endif %}
+</section>
+{% endblock %}

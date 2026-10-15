@@ -1,0 +1,48 @@
+{% extends "admin/base_site.html" %}
+{% block content_title %}{% endblock %}
+{% block content %}
+<div class="ds-page">
+<h1>Import opening stock</h1>
+
+{% if errors %}
+<div class="ds-errors">
+  <p>Nothing was imported. Fix these and upload the file again.</p>
+  <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+{% if preview %}
+<div class="ds-section">
+  <p class="ds-summary">Nothing is saved yet. This will add {{ total_units }} unit{{ total_units|pluralize }} on {{ preview|length }} line{{ preview|length|pluralize }}{% if new_products %} and create {{ new_products }} new product{{ new_products|pluralize }}{% endif %}.</p>
+  <table class="ds-table">
+    <tr><th>Row</th><th>SKU</th><th>Product</th><th>Warehouse</th><th class="num">Quantity</th></tr>
+    {% for r in preview %}
+    <tr>
+      <td>{{ r.row }}</td>
+      <td>{{ r.sku }}</td>
+      <td>{{ r.product_name }}{% if r.new_product %}<span class="ds-tag">new</span>{% endif %}</td>
+      <td>{{ r.warehouse_name }}</td>
+      <td class="num">{{ r.quantity }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <form method="post" action="{% url 'admin:inventory_import_confirm' %}" class="ds-actions">
+    {% csrf_token %}
+    <input type="submit" value="Load this stock" class="default">
+    <a href="{% url 'admin:inventory_import' %}">Cancel and start over</a>
+  </form>
+</div>
+{% else %}
+<div class="ds-prose">
+  <p>Use this once to load the stock you have today. From then on, stock changes through purchases, sales and transfers.</p>
+  <p>Start from the <a href="{% url 'admin:inventory_import_template' %}">Excel template</a>. Add one row for each product in each warehouse, copying the counts from the notebook. Save it, then choose it below. You will see a preview before anything is saved.</p>
+  <form method="post" enctype="multipart/form-data" class="ds-form">
+    {% csrf_token %}
+    <input type="file" name="file" accept=".xlsx,.csv">
+    <input type="submit" value="Check file" class="default">
+  </form>
+  <p class="fine">A product and warehouse can only be loaded once. A second upload for the same pair is refused, so stock cannot be counted twice.</p>
+</div>
+{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "admin/login.html" %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+  body.login {
+    background: #1f3b33;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 8%;
+  }
+  .login #container {
+    background: var(--body-bg);
+    border: none;
+    border-radius: 18px;
+    overflow: hidden;
+    width: 380px;
+    min-width: 320px;
+    margin: 0;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+  }
+  .login #header {
+    background: transparent;
+    padding: 32px 32px 0;
+    justify-content: flex-start;
+  }
+  .login #site-name { line-height: 1.25; }
+  .login #site-name a:link,
+  .login #site-name a:visited {
+    color: var(--body-loud-color);
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .login #content {
+    padding: 22px 32px 28px;
+  }
+  .login .form-row { padding: 6px 0; }
+  .login .form-row label {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: var(--body-medium-color);
+  }
+  .login .form-row input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 11px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--body-bg);
+    color: var(--body-fg);
+  }
+  .login .submit-row { padding: 14px 0 0; text-align: left; }
+  .login .submit-row input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .login .theme-toggle,
+  .login #content-related,
+  .login #footer { display: none; }
+  @media (max-width: 700px) {
+    body.login { justify-content: center; padding-left: 0; }
+  }
+</style>
+{% endblock %}
+
+{% block content_title %}{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>Transfer stock</h1>
+<p>Transferring <strong>{{ inventory.product }}</strong> out of <strong>{{ inventory.warehouse }}</strong>
+   (currently {{ inventory.quantity }} units, {{ inventory.available_quantity }} available).</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Transfer" class="default">
+</form>
+{% endblock %}

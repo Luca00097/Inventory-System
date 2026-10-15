@@ -1,0 +1,26 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ title|default:"Dashboard" }}{% endblock %} | {{ site_header }}</title>
+  <link rel="stylesheet" href="{% static 'inventory/theme.css' %}">
+</head>
+<body class="portal">
+  <header class="pt-header">
+    <a class="pt-brand" href="{% url 'dashboard' %}">{{ site_header }}</a>
+    <nav class="pt-nav" aria-label="Main">
+      <a href="{% url 'dashboard' %}"{% if nav == 'dashboard' %} aria-current="page"{% endif %}>Dashboard</a>
+      <a href="{% url 'portal_products' %}"{% if nav == 'products' %} aria-current="page"{% endif %}>Products</a>
+    </nav>
+    <nav class="pt-user" aria-label="Account">
+      <span class="pt-who">{{ user.get_username }}<span class="pt-role">{{ role_label }}</span></span>
+      {% if user.is_staff %}<a href="{% url 'admin:index' %}">Manage data</a>{% endif %}
+      <form method="post" action="{% url 'portal_logout' %}">{% csrf_token %}<button type="submit">Log out</button></form>
+    </nav>
+  </header>
+  <main class="pt-main">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

@@ -1,0 +1,539 @@
+/*
+ * Visual theme for the inventory admin.
+ * Palette: deep pine frame, ink text, brick used ONLY for money owed / low stock.
+ * Type: IBM Plex Sans (bundled, works offline).
+ * It works by overriding Django admin's own CSS variables, so every built-in
+ * admin page inherits it, then adds a few classes for our custom pages.
+ */
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("fonts/ibm-plex-sans-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("fonts/ibm-plex-sans-latin-500-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("fonts/ibm-plex-sans-latin-600-normal.woff2") format("woff2");
+}
+
+/* ---------- Palette (light) ---------- */
+html[data-theme="light"],
+:root {
+  --primary: #3d6b5c;
+  --secondary: #1f3b33;
+  --accent: #b6cdc2;
+  --primary-fg: #fff;
+
+  --body-fg: #26302b;
+  --body-bg: #fbfbf9;
+  --body-quiet-color: #5d675f;
+  --body-medium-color: #3f4943;
+  --body-loud-color: #1b231e;
+
+  --header-color: #cfdcd5;
+  --header-branding-color: #ffffff;
+  --header-bg: #1f3b33;
+  --header-link-color: #ffffff;
+
+  --breadcrumbs-fg: #b9cdc3;
+  --breadcrumbs-link-fg: #ffffff;
+  --breadcrumbs-bg: #2a4d42;
+
+  --link-fg: #2f5d50;
+  --link-hover-color: #1b3a30;
+  --link-selected-fg: #2f5d50;
+
+  --hairline-color: #e3e6df;
+  --border-color: #c9cec5;
+
+  --error-fg: #a63d2f;
+  --message-success-bg: #e3eee8;
+  --message-warning-bg: #f6edd6;
+  --message-error-bg: #f7e6e2;
+
+  --darkened-bg: #f1f2ee;
+  --selected-bg: #e6eae4;
+  --selected-row: #eaf0ec;
+
+  --button-fg: #fff;
+  --button-bg: #2f5d50;
+  --button-hover-bg: #1f3b33;
+  --default-button-bg: #1f3b33;
+  --default-button-hover-bg: #2f5d50;
+  --close-button-bg: #6b756e;
+  --close-button-hover-bg: #26302b;
+  --delete-button-bg: #a63d2f;
+  --delete-button-hover-bg: #8b3024;
+
+  --object-tools-fg: #fff;
+  --object-tools-bg: #6b756e;
+  --object-tools-hover-bg: #26302b;
+
+  --font-family-primary: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ---------- Palette (dark) ---------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: #2f5d50;
+    --secondary: #14231e;
+    --accent: #8fb3a3;
+    --body-fg: #e1e7e2;
+    --body-bg: #171c19;
+    --body-quiet-color: #a9b3ac;
+    --body-medium-color: #cdd5cf;
+    --body-loud-color: #ffffff;
+    --header-color: #b9cdc3;
+    --header-bg: #101a16;
+    --breadcrumbs-bg: #1c2f28;
+    --link-fg: #8fc0ac;
+    --link-hover-color: #bfe0d1;
+    --link-selected-fg: #8fc0ac;
+    --hairline-color: #28312c;
+    --border-color: #3a453e;
+    --error-fg: #e58a7b;
+    --message-success-bg: #1f3329;
+    --message-warning-bg: #3a3320;
+    --message-error-bg: #3b2420;
+    --darkened-bg: #1d2420;
+    --selected-bg: #26302b;
+    --selected-row: #1f2c26;
+    --button-bg: #2f5d50;
+    --button-hover-bg: #3d6b5c;
+    --default-button-bg: #2f5d50;
+    --default-button-hover-bg: #3d6b5c;
+  }
+}
+html[data-theme="dark"] {
+  --primary: #2f5d50;
+  --secondary: #14231e;
+  --accent: #8fb3a3;
+  --body-fg: #e1e7e2;
+  --body-bg: #171c19;
+  --body-quiet-color: #a9b3ac;
+  --body-medium-color: #cdd5cf;
+  --body-loud-color: #ffffff;
+  --header-color: #b9cdc3;
+  --header-bg: #101a16;
+  --breadcrumbs-bg: #1c2f28;
+  --link-fg: #8fc0ac;
+  --link-hover-color: #bfe0d1;
+  --link-selected-fg: #8fc0ac;
+  --hairline-color: #28312c;
+  --border-color: #3a453e;
+  --error-fg: #e58a7b;
+  --message-success-bg: #1f3329;
+  --message-warning-bg: #3a3320;
+  --message-error-bg: #3b2420;
+  --darkened-bg: #1d2420;
+  --selected-bg: #26302b;
+  --selected-row: #1f2c26;
+  --button-bg: #2f5d50;
+  --button-hover-bg: #3d6b5c;
+  --default-button-bg: #2f5d50;
+  --default-button-hover-bg: #3d6b5c;
+}
+
+/* ---------- Admin chrome ---------- */
+body {
+  font-family: var(--font-family-primary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+#site-name a,
+#site-name a:link,
+#site-name a:visited {
+  font-weight: 600;
+  letter-spacing: 0;
+}
+#header { padding: 12px 24px; }
+
+#content h1 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--body-loud-color);
+  margin: 0 0 18px;
+}
+
+/* Django upper-cases table and module captions; we use plain sentence case. */
+.module caption,
+.module h2,
+.inline-group h2,
+#nav-sidebar .module caption,
+thead th,
+tfoot td {
+  text-transform: none;
+  letter-spacing: 0;
+}
+.module caption,
+.module h2,
+.inline-group h2 {
+  font-weight: 600;
+  font-size: 13px;
+}
+thead th {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+td, th { font-variant-numeric: tabular-nums; }
+
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+a.button,
+.object-tools a {
+  border-radius: 4px;
+  font-family: var(--font-family-primary);
+}
+.object-tools a { font-weight: 500; text-transform: none; letter-spacing: 0; }
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--link-fg);
+  outline-offset: 2px;
+}
+
+/* ---------- Dashboard ---------- */
+.ds-page { max-width: 1120px; }
+
+.ds-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(460px, 1fr));
+  gap: 40px 56px;
+  margin-bottom: 40px;
+}
+.ds-section h2 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--body-loud-color);
+}
+.ds-section h2 a { font-size: 13px; font-weight: 400; }
+
+.ds-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.ds-table th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--body-quiet-color);
+  padding: 8px 12px 6px 0;
+  border-bottom: 1px solid var(--border-color);
+  background: none;
+}
+.ds-table td {
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid var(--hairline-color);
+  vertical-align: baseline;
+}
+.ds-table th:last-child,
+.ds-table td:last-child { padding-right: 0; }
+.ds-table .num { text-align: right; }
+.ds-table .neg { color: var(--error-fg); }
+.ds-table .pos { color: var(--link-fg); }
+.ds-empty { color: var(--body-quiet-color); font-size: 13px; padding: 10px 0; }
+
+/* ---------- Import page ---------- */
+.ds-prose { max-width: 640px; }
+.ds-prose p { margin: 0 0 12px; font-size: 14px; }
+.ds-prose .fine { color: var(--body-quiet-color); font-size: 13px; }
+.ds-form { display: flex; align-items: center; gap: 12px; margin: 16px 0 6px; flex-wrap: wrap; }
+.ds-errors {
+  max-width: 760px;
+  margin: 0 0 24px;
+  padding: 14px 18px;
+  background: var(--message-error-bg);
+  border-radius: 6px;
+}
+.ds-errors p { margin: 0 0 8px; font-weight: 600; color: var(--error-fg); }
+.ds-errors ul { margin: 0; padding-left: 18px; }
+.ds-errors li { margin: 3px 0; color: var(--body-fg); }
+.ds-summary { margin: 0 0 14px; font-size: 14px; }
+.ds-tag {
+  margin-left: 6px;
+  padding: 0 6px;
+  font-size: 11px;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  color: var(--body-quiet-color);
+}
+.ds-actions { display: flex; align-items: center; gap: 16px; margin-top: 18px; }
+
+@media (max-width: 640px) {
+  .ds-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* ---------- Quieter details ---------- */
+/* Django stripes every table row; our own tables stay plain. */
+.ds-table tr td,
+.ds-table tr:nth-child(odd) td,
+.ds-table tr:nth-child(even) td { background: transparent; }
+
+/* Sidebar section headings: a label, not a heavy bar. */
+#nav-sidebar .module caption,
+#nav-sidebar .module caption a:link,
+#nav-sidebar .module caption a:visited {
+  background: none;
+  color: var(--body-quiet-color);
+  font-weight: 600;
+  font-size: 12px;
+  padding-left: 10px;
+}
+#nav-sidebar .module caption { border-bottom: 1px solid var(--hairline-color); }
+
+/* Django stripes the <tr> itself (tr:nth-child), so clear it there too. */
+.ds-table tr,
+.ds-table tr:nth-child(odd),
+.ds-table tr:nth-child(even) { background: transparent; }
+
+/* Last stragglers: Django upper-cases these by default. */
+.object-tools a:link,
+.object-tools a:visited,
+#changelist-filter h2,
+#changelist-filter-extra-actions h3,
+.module h3 { text-transform: none; letter-spacing: 0; }
+#changelist-filter h2 { font-size: 13px; font-weight: 600; }
+#nav-sidebar .current-app .section:link,
+#nav-sidebar .current-app .section:visited { color: var(--body-quiet-color); }
+
+/* ============================================================
+   Staff portal (/users/): sign-in and role-aware dashboard.
+   Does not load Django admin CSS, so it carries its own basics.
+   ============================================================ */
+body.portal,
+body.pt-login {
+  margin: 0;
+  font-family: var(--font-family-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--body-fg);
+}
+body.portal { background: var(--darkened-bg); }
+.portal a { color: var(--link-fg); }
+.portal h1, .portal h2 { font-family: inherit; }
+
+.pt-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  flex-wrap: wrap;
+  padding: 14px 28px;
+  background: var(--header-bg);
+  color: var(--header-color);
+}
+.pt-header a.pt-brand {
+  color: var(--header-branding-color);
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.pt-user { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; font-size: 13px; }
+.pt-user a,
+.pt-user button {
+  color: var(--header-link-color);
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.pt-user form { margin: 0; }
+.pt-role {
+  margin-left: 8px;
+  padding: 1px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 99px;
+  font-size: 12px;
+}
+.pt-main { max-width: 1120px; margin: 0 auto; padding: 28px 24px 56px; }
+.pt-title { margin: 0 0 18px; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; color: var(--body-loud-color); }
+.pt-group { margin: 22px 0 8px; font-size: 12px; font-weight: 500; color: var(--body-quiet-color); }
+.pt-title + .pt-group, .pt-title + .ds-cards { margin-top: 0; }
+
+/* KPI cards */
+.ds-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0 0 14px;
+}
+.ds-card {
+  background: var(--body-bg);
+  border: 1px solid var(--hairline-color);
+  border-radius: 12px;
+  padding: 18px 20px 16px;
+}
+.ds-card .label { font-size: 13px; color: var(--body-quiet-color); }
+.ds-card .figure {
+  margin: 6px 0 4px;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--body-loud-color);
+}
+.ds-card.alert .figure { color: var(--error-fg); }
+.ds-card .note { font-size: 12.5px; color: var(--body-quiet-color); }
+
+/* Panels that hold tables and actions */
+.ds-panel {
+  background: var(--body-bg);
+  border: 1px solid var(--hairline-color);
+  border-radius: 12px;
+  padding: 18px 22px 14px;
+  margin: 14px 0;
+}
+.ds-panel h2 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--body-loud-color);
+}
+.ds-panel h2 a { font-size: 13px; font-weight: 400; }
+.pt-main .ds-grid { gap: 14px; margin: 14px 0; }
+.pt-main .ds-grid .ds-panel { margin: 0; }
+
+.ds-actions-grid {
+  list-style: none;
+  margin: 8px 0 2px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0 32px;
+}
+.ds-actions-grid li {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hairline-color);
+}
+.ds-actions-grid a { font-weight: 500; font-size: 14px; }
+.ds-actions-grid span { font-size: 12.5px; color: var(--body-quiet-color); }
+
+/* Sign-in page */
+body.pt-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 8%;
+  background: #1f3b33;
+}
+.pt-login-card {
+  box-sizing: border-box;
+  width: 380px;
+  max-width: calc(100% - 32px);
+  padding: 32px 32px 26px;
+  background: var(--body-bg);
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
+.pt-login-card h1 { margin: 0 0 6px; font-size: 21px; font-weight: 600; line-height: 1.25; letter-spacing: -0.01em; color: var(--body-loud-color); }
+.pt-login-sub { margin: 0 0 18px; color: var(--body-quiet-color); }
+.pt-login-card label { display: block; margin: 12px 0 4px; font-weight: 500; color: var(--body-medium-color); }
+.pt-login-card input[type="text"],
+.pt-login-card input[type="password"] {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 9px 11px;
+  font: inherit;
+  color: var(--body-fg);
+  background: var(--body-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+.pt-login-card button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 10px 14px;
+  font: inherit;
+  font-weight: 500;
+  color: #fff;
+  background: var(--default-button-bg);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.pt-login-card button:hover { background: var(--default-button-hover-bg); }
+.pt-error { margin: 0 0 6px; padding: 9px 12px; border-radius: 6px; background: var(--message-error-bg); color: var(--error-fg); }
+.pt-login-help { margin: 16px 0 0; font-size: 12.5px; color: var(--body-quiet-color); }
+@media (max-width: 700px) {
+  body.pt-login { justify-content: center; padding-left: 0; }
+  .pt-header { padding: 12px 16px; }
+  .pt-main { padding: 20px 14px 40px; }
+}
+
+@media (max-width: 900px) {
+  .ds-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 480px) {
+  .ds-cards { grid-template-columns: minmax(0, 1fr); }
+  .ds-card .figure { font-size: 24px; }
+}
+
+/* Portal navigation, search and product page */
+.pt-nav { display: flex; gap: 4px; margin-right: auto; margin-left: 12px; }
+.pt-nav a {
+  padding: 5px 12px;
+  border-radius: 6px;
+  color: var(--header-color);
+  text-decoration: none;
+  font-size: 14px;
+}
+.pt-nav a:hover { color: #fff; }
+.pt-nav a[aria-current="page"] { background: rgba(255, 255, 255, 0.14); color: #fff; }
+.pt-back { margin: 0 0 6px; font-size: 13px; }
+.pt-sub { margin: -10px 0 18px; color: var(--body-quiet-color); }
+.ds-search { display: flex; gap: 10px; align-items: center; margin: 0 0 8px; flex-wrap: wrap; }
+.ds-search input[type="search"] {
+  box-sizing: border-box;
+  width: min(380px, 100%);
+  padding: 8px 11px;
+  font: inherit;
+  color: var(--body-fg);
+  background: var(--body-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+.ds-search button {
+  padding: 8px 16px;
+  font: inherit;
+  color: #fff;
+  background: var(--default-button-bg);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.ds-table tr.total td { font-weight: 600; border-top: 1px solid var(--border-color); border-bottom: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

@@ -1,0 +1,4 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'inventory/theme.css' %}">{% endblock %}
+{% block userlinks %}<a href="{% url 'dashboard' %}">Dashboard</a> / {{ block.super }}{% endblock %}

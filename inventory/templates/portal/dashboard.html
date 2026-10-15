@@ -1,0 +1,130 @@
+{% extends "portal/base.html" %}
+{% block content %}
+<h1 class="pt-title">Dashboard</h1>
+
+{% if cards.money %}
+<h2 class="pt-group">Money</h2>
+<div class="ds-cards">
+  {% for c in cards.money %}
+  <div class="ds-card{% if c.alert %} alert{% endif %}">
+    <div class="label">{{ c.label }}</div>
+    <div class="figure">{{ c.value }}</div>
+    <div class="note">{{ c.note }}</div>
+  </div>
+  {% endfor %}
+</div>
+<h2 class="pt-group">Stock</h2>
+{% endif %}
+<div class="ds-cards">
+  {% for c in cards.stock %}
+  <div class="ds-card{% if c.alert %} alert{% endif %}">
+    <div class="label">{{ c.label }}</div>
+    <div class="figure">{{ c.value }}</div>
+    <div class="note">{{ c.note }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+{% if actions %}
+<section class="ds-panel">
+  <h2>What do you want to do?</h2>
+  <ul class="ds-actions-grid">
+    {% for a in actions %}
+    <li><a href="{{ a.url }}">{{ a.title }}</a><span>{{ a.hint }}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<div class="ds-grid">
+  <section class="ds-panel">
+    <h2>Low on stock{% if links.stock %} <a href="{% url 'admin:inventory_inventory_changelist' %}">See all stock</a>{% endif %}</h2>
+    {% if low_stock_rows %}
+    <table class="ds-table">
+      <tr><th>Product</th><th>Warehouse</th><th class="num">In stock</th><th class="num">Reorder at</th></tr>
+      {% for inv in low_stock_rows %}
+      <tr>
+        <td><a href="{% url 'portal_product' inv.product.id %}">{{ inv.product.name }}</a></td>
+        <td>{{ inv.warehouse }}</td>
+        <td class="num neg">{{ inv.quantity }}</td>
+        <td class="num">{{ inv.product.reorder_level }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}<p class="ds-empty">Nothing is below its reorder level.</p>{% endif %}
+  </section>
+
+  {% if balances %}
+  <section class="ds-panel">
+    <h2>Who owes you{% if links.sales %} <a href="{% url 'admin:inventory_sale_changelist' %}">See all sales</a>{% endif %}</h2>
+    {% if owed_rows %}
+    <table class="ds-table">
+      <tr><th>Customer</th><th class="num">Unpaid sales</th><th class="num">Owes</th><th class="num">Oldest due</th></tr>
+      {% for o in owed_rows %}
+      <tr>
+        <td>{% if links.customer %}<a href="{% url 'admin:inventory_customer_change' o.customer.id %}">{{ o.customer.name }}</a>{% else %}{{ o.customer.name }}{% endif %}</td>
+        <td class="num">{{ o.count }}</td>
+        <td class="num{% if o.overdue %} neg{% endif %}">₦{{ o.balance|floatformat:"0g" }}</td>
+        <td class="num{% if o.overdue %} neg{% endif %}">{% if o.due %}{{ o.due|date:"j M" }}{% else %}-{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}<p class="ds-empty">No unpaid sales.</p>{% endif %}
+  </section>
+  {% endif %}
+
+  <section class="ds-panel">
+    <h2>Waiting for delivery{% if links.purchase %} <a href="{% url 'admin:inventory_purchase_changelist' %}">See all purchases</a>{% endif %}</h2>
+    {% if pending_rows %}
+    <table class="ds-table">
+      <tr><th>Order</th><th>Supplier</th>{% if money %}<th class="num">Total</th>{% endif %}<th class="num">Expected</th></tr>
+      {% for po in pending_rows %}
+      <tr>
+        <td>{% if links.purchase %}<a href="{% url 'admin:inventory_purchase_change' po.id %}">PO-{{ po.id|stringformat:"04d" }}</a>{% else %}PO-{{ po.id|stringformat:"04d" }}{% endif %}</td>
+        <td>{{ po.supplier }}</td>
+        {% if money %}<td class="num">₦{{ po.total_cost|floatformat:"0g" }}</td>{% endif %}
+        <td class="num">{% if po.expected_delivery %}{{ po.expected_delivery|date:"j M" }}{% else %}-{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}<p class="ds-empty">No orders are waiting on a supplier.</p>{% endif %}
+  </section>
+
+  <section class="ds-panel">
+    <h2>Stock counts to review{% if links.reconciliation %} <a href="{% url 'admin:inventory_reconciliation_changelist' %}">See all counts</a>{% endif %}</h2>
+    {% if open_recons %}
+    <table class="ds-table">
+      <tr><th>Product</th><th>Warehouse</th><th class="num">System</th><th class="num">Counted</th><th class="num">Difference</th></tr>
+      {% for r in open_recons %}
+      <tr>
+        <td>{% if links.reconciliation %}<a href="{% url 'admin:inventory_reconciliation_change' r.id %}">{{ r.product.name }}</a>{% else %}{{ r.product.name }}{% endif %}</td>
+        <td>{{ r.warehouse }}</td>
+        <td class="num">{{ r.system_quantity }}</td>
+        <td class="num">{{ r.physical_quantity }}</td>
+        <td class="num {% if r.variance < 0 %}neg{% endif %}">{{ r.variance }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}<p class="ds-empty">No counts are waiting for approval.</p>{% endif %}
+  </section>
+</div>
+
+<section class="ds-panel">
+  <h2>Recent stock movements{% if links.history %} <a href="{% url 'admin:inventory_stockmovement_changelist' %}">See full history</a>{% endif %}</h2>
+  {% if recent_movements %}
+  <table class="ds-table">
+    <tr><th>When</th><th>Product</th><th>Warehouse</th><th>What happened</th><th class="num">Quantity</th><th>Reference</th></tr>
+    {% for m in recent_movements %}
+    <tr>
+      <td>{{ m.timestamp|date:"j M, H:i" }}</td>
+      <td><a href="{% url 'portal_product' m.product_id %}">{{ m.product.name }}</a></td>
+      <td>{{ m.warehouse }}</td>
+      <td>{{ m.get_movement_type_display }}</td>
+      <td class="num {% if m.quantity > 0 %}pos{% else %}neg{% endif %}">{% if m.quantity > 0 %}+{% endif %}{{ m.quantity }}</td>
+      <td>{{ m.reference|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="ds-empty">No stock has moved yet.</p>{% endif %}
+</section>
+{% endblock %}

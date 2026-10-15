@@ -1,0 +1,5 @@
+{% extends "admin/change_form.html" %}
+{% block extrahead %}
+{{ block.super }}
+<script id="product-price-map" type="application/json">{{ product_price_map_json|safe }}</script>
+{% endblock %}

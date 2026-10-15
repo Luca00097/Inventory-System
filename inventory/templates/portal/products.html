@@ -1,0 +1,27 @@
+{% extends "portal/base.html" %}
+{% block content %}
+<h1 class="pt-title">Products</h1>
+<section class="ds-panel">
+  <form method="get" class="ds-search">
+    <label for="q" class="sr-only">Search products</label>
+    <input type="search" id="q" name="q" value="{{ q }}" placeholder="Search by name, SKU or category">
+    <button type="submit">Search</button>
+    {% if q %}<a href="{% url 'portal_products' %}">Clear</a>{% endif %}
+  </form>
+  {% if products %}
+  <table class="ds-table">
+    <tr><th>SKU</th><th>Product</th><th>Category</th><th class="num">In stock</th><th class="num">Reorder at</th><th class="num">Selling price</th></tr>
+    {% for p in products %}
+    <tr>
+      <td><a href="{% url 'portal_product' p.id %}">{{ p.sku }}</a></td>
+      <td>{{ p.name }}</td>
+      <td>{{ p.category|default:"-" }}</td>
+      <td class="num{% if p.total <= p.reorder_level %} neg{% endif %}">{{ p.total }}</td>
+      <td class="num">{{ p.reorder_level }}</td>
+      <td class="num">₦{{ p.selling_price|floatformat:"0g" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}<p class="ds-empty">{% if q %}No product matches "{{ q }}".{% else %}No products yet.{% endif %}</p>{% endif %}
+</section>
+{% endblock %}

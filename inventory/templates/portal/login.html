@@ -1,0 +1,26 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in | {{ site_header|default:"Inventory" }}</title>
+  <link rel="stylesheet" href="{% static 'inventory/theme.css' %}">
+</head>
+<body class="pt-login">
+  <div class="pt-login-card">
+    <h1>Mouka &amp; Golden Penny Distribution</h1>
+    <p class="pt-login-sub">Sign in to see stock and record your work.</p>
+    <form method="post">
+      {% csrf_token %}
+      {% if form.errors %}<p class="pt-error" role="alert">That username and password did not match. Check them and try again.</p>{% endif %}
+      <label for="id_username">Username</label>
+      <input type="text" name="username" id="id_username" autocomplete="username" autofocus required>
+      <label for="id_password">Password</label>
+      <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit">Log in</button>
+    </form>
+    <p class="pt-login-help">No account yet? Ask the owner to create one for you.</p>
+  </div>
+</body>
+</html>
